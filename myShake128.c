@@ -1,6 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+typedef unsigned long long uint64_t;
+
+uint64_t f(){
+    return 6;
+}
+
+int index(int x, int y){
+    return 5*y + x;
+}
 
 int main(int argc, char *argv[]){
 
@@ -10,9 +19,14 @@ int main(int argc, char *argv[]){
     }
 
     char byte;
-    
-    while ((byte = getchar()) != EOF){
+    uint64_t lane;
+    int counter = 0;
+    int l = 8;
 
+    while ((byte = getchar()) != EOF){
+        lane = lane<<8 + byte;
+        printf("byte %c is = 0x%x\n", byte, byte);
+        counter = ++counter%l;
     }
 
 
