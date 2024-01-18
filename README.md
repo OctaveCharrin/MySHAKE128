@@ -1,6 +1,6 @@
 # MySHAKE128
 
-This is a C implementation of the extendable-output function SHAKE128 following the specification defined in [FIPS 202](https://csrc.nist.gov/pubs/fips/202/final).
+This is a C implementation of the extendable-output function SHAKE128 following the specifications defined in [FIPS 202](https://csrc.nist.gov/pubs/fips/202/final).
 
 ## Initialization
 
@@ -21,6 +21,8 @@ The output value shoulb be:
 ```bash
 ba27cc6a7a85887a1888c0678c05cd7fcf619ed791dce41b7e1a81c280bec8bb
 ```
+
+You can replace "short-text.txt" with your prefered input stream.
 
 ### Author
 Octave Charrin
