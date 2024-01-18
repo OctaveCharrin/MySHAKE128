@@ -1,6 +1,6 @@
 #include "utils.h"
 #include "padding.h"
-#include "step_mapping.h"
+#include "keccakp.h"
 
 
 int main(int argc, char *argv[]){
@@ -32,12 +32,17 @@ int main(int argc, char *argv[]){
         S[i] = 0;
     }
 
+
+    /********************/
+    /**** ABSORPTION ****/
+    /********************/
+
     // Read input stream
     char fileStatus = (byte = getchar());
     if (fileStatus != EOF) empty_string = 0;
     while (fileStatus != EOF){
         lenN++;
-        lane = lane | byte<<(8*(7-pos_in_lane));
+        lane = lane | byte<<(8*pos_in_lane);
         pos_in_lane = (pos_in_lane+1)%8;
         
         // Lane completed
@@ -45,18 +50,11 @@ int main(int argc, char *argv[]){
             N[n_lane++] = lane;
             lane = 0;
         }       
-
         // Input string completed
         if (lenN == r){
-            printf("doing something with complete state:\n");
-
-            XOR(N, S);
+            XOR(N, S); /* XOR N and S and store the result in S */
             keccakp(S, n_round);
-
-
-            printState(N);
             resetState(N);
-            
             lenN = 0;
             n_lane = 0;
         }
@@ -64,22 +62,36 @@ int main(int argc, char *argv[]){
     }
 
     // End of file attained
-    printf("*********** End of line ***********\n\n");
     if (lenN != 0 || empty_string){
         N[n_lane] = lane;
 
         // Incomplete input string: padding
-        printf("before padding\n");
-        printState(N);
-        printf("len = %d bytes\n", lenN);
         padding p = pad10x1(8*r, 8*lenN+4);
         pad(N, p);
         freePadding(&p);
-        printf("after padding\n");
-        printState(N);
     }
+    XOR(N, S);
+    keccakp(S, n_round);
 
-    printf("\n\nHash length n = %d\n", n);
+
+    /*******************/
+    /**** SQUEEZING ****/
+    /*******************/
+
+    int q = n/r;
+    while (q != 0){
+        squeeze(S, r);
+        n = n-r;
+        q--;
+        if (!q)
+            break;
+        keccakp(S, n_round);
+    }
+    squeeze(S, n);
+    printf("\n");
+
+    free(N);
+    free(S);
 
     return 0;
 }

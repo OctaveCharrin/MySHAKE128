@@ -2,3 +2,6 @@ shake128
 shake128.exe
 .vscode
 *.o
+*.txt
+test
+test.c

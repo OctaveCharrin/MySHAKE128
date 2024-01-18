@@ -1,3 +1,3 @@
 #include "utils.h"
 
-void keccakp(uint64_t *S, int n_round);
+void keccakp(uint64_t *A, int n_round);

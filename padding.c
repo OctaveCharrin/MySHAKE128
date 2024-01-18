@@ -10,18 +10,18 @@ padding pad10x1(int x, int m){
 
     } else {
         int j = safeModulo(-m-2, x); /* number of 0s that are missing */        
-        //printf("j = %d\n", j);
+        printf("j = %d\n", j);
         j = (j+6)/8; /* number of bytes that the full padding contains */
-        //printf("then j = %d\n", j);
+        printf("then j = %d\n", j);
         
         padding p;
         initPadding(&p, j);
 
         if (j==1){
-            p.c[0] = 0xf9; // = 1111 1001
+            p.c[0] = 0x9f; // = 1001 1111
         } else {
-            p.c[0] = 0xf8; // = 1111 1000
-            p.c[p.len-1] = 1;
+            p.c[0] = 0x1f; // = 0001 1111
+            p.c[p.len-1] = 0x80; // = 1000 0000
         }
         return p;
     }
@@ -29,15 +29,15 @@ padding pad10x1(int x, int m){
 
 void pad(uint64_t* S, padding p){
     
-    int q = p.len/8;
-    int r = p.len - (8*q);
-    //printf("q = %d, r = %d\n", q, r);
+    int q = p.len/8; /* Number of missing lines */
+    int r = p.len - (8*q); /* Number of missing bytes after completing missing lines */
+    printf("q = %d, r = %d\n", q, r);
 
     uint64_t l;
     l = S[20 - q];
     for (int i=0; i<r; ++i){
         uint64_t c = (uint64_t)p.c[i];
-        l = l | (c<<(8*(r-1-i)));
+        l = l | (c<<(8*(8-r+i)));
     }
     S[20 - q] = l;
 
@@ -45,7 +45,7 @@ void pad(uint64_t* S, padding p){
         l = 0;
         for(int j=0; j<8; ++j){
             uint64_t c = p.c[r+8*(q-i)+j];
-            l = l | c<<(8*(7-j));
+            l = l | c<<(8*j);
         }
         S[21-i]=l;
     }
