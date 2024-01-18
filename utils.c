@@ -51,6 +51,28 @@ void freePadding(padding* p) {
     p->len = 0;
 }
 
+void resetState(uint64_t* S){
+    for (int i=0; i<25; ++i){
+        S[i] = 0;
+    }
+}
+
+void XOR(uint64_t* N, uint64_t* S){
+    for (int i=0; i<25; ++i){
+        S[i] = N[i] ^ S[i];
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
 void printBits(unsigned long long num) {
     int bitSize = sizeof(unsigned long long) * 8; // Number of bits in unsigned long long
 

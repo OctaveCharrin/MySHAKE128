@@ -6,11 +6,6 @@
 
 typedef unsigned long long uint64_t;
 
-typedef struct lane {
-    char isEmpty;
-    uint64_t value;
-}lane;
-
 typedef struct padding {
     unsigned char* c;
     int len; //in bytes
@@ -27,5 +22,8 @@ uint64_t rotL(uint64_t l, int n);
 padding nullPadding();
 void initPadding(padding* p, int n);
 void freePadding(padding* p);
+
+void resetState(uint64_t* S);
+void XOR(uint64_t* N, uint64_t* S);
 
 void printState(uint64_t* S);

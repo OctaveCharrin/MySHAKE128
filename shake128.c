@@ -11,49 +11,76 @@ int main(int argc, char *argv[]){
     }
 
     int n = atoi(argv[1]);
+    int r = 168;
+    int n_round = 24;
 
     uint64_t byte;
-    uint64_t l = 0;
-    int counter = 0;
-    int len = 0;
-    int idx = 0;
-    char empty = 1;
+    uint64_t lane = 0;
+    int pos_in_lane = 0;
+    int lenN = 0;
+    int n_lane = 0;
+    char empty_string = 1;
 
-    uint64_t* S = malloc(25*sizeof(uint64_t));
+    // Init input string and state buffers
+    uint64_t *N, *S;
+    N = malloc(25*sizeof(uint64_t));
+    for (int i=0; i<25; ++i){
+        N[i] = 0;
+    }
+    S = malloc(25*sizeof(uint64_t));
     for (int i=0; i<25; ++i){
         S[i] = 0;
     }
 
-    while ((byte = getchar()) != EOF){
-        empty = 0;
-        l = l | byte<<(8*(7-counter));
-        counter = (counter+1)%8;
-        len++;
-        printf("byte %lld is = 0x%llx\n", byte, byte);
-        printf("lane is = 0x%llx\n", l);
-        if (counter == 0){
-            S[idx++] = l;
-            l = 0;
+    // Read input stream
+    char fileStatus = (byte = getchar());
+    if (fileStatus != EOF) empty_string = 0;
+    while (fileStatus != EOF){
+        lenN++;
+        lane = lane | byte<<(8*(7-pos_in_lane));
+        pos_in_lane = (pos_in_lane+1)%8;
+        
+        // Lane completed
+        if (pos_in_lane == 0){
+            N[n_lane++] = lane;
+            lane = 0;
+        }       
+
+        // Input string completed
+        if (lenN == r){
+            printf("doing something with complete state:\n");
+
+            XOR(N, S);
+            keccakp(S, n_round);
+
+
+            printState(N);
+            resetState(N);
+            
+            lenN = 0;
+            n_lane = 0;
         }
+        fileStatus = (byte = getchar());
     }
-    S[idx] = l;
 
-    if(empty){printf("empty\n");}else{printf("not empty\n");}
-    
-    printf("End of line ***********\n\n");
+    // End of file attained
+    printf("*********** End of line ***********\n\n");
+    if (lenN != 0 || empty_string){
+        N[n_lane] = lane;
 
-    printf("before padding\n");
-    printState(S);
-
-    printf("len = %d\n", len);
-
-    len = len * 8;
-    pad(S, 168*8, len+4);
-    
-    printf("after padding\n");
-    printState(S);
+        // Incomplete input string: padding
+        printf("before padding\n");
+        printState(N);
+        printf("len = %d bytes\n", lenN);
+        padding p = pad10x1(8*r, 8*lenN+4);
+        pad(N, p);
+        freePadding(&p);
+        printf("after padding\n");
+        printState(N);
+    }
 
     printf("\n\nHash length n = %d\n", n);
+
     return 0;
 }
 

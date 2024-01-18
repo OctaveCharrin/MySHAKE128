@@ -27,8 +27,7 @@ padding pad10x1(int x, int m){
     }
 }
 
-void pad(uint64_t* S, int x, int m){
-    padding p = pad10x1(x, m);
+void pad(uint64_t* S, padding p){
     
     int q = p.len/8;
     int r = p.len - (8*q);
