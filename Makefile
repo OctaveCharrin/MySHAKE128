@@ -2,11 +2,16 @@ CC = gcc
 CFLAGS = -Wall -g
 
 TARGET = shake128
+SRC = shake128.c utils.c padding.c step_mapping.c
+OBJ = $(SRC:.c=.o)
 
 all: $(TARGET)
 
-$(TARGET): myShake128.c
-	$(CC) $(CFLAGS) -o $(TARGET) myShake128.c
+$(TARGET): $(OBJ)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJ)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
-	rm -f $(TARGET)
+	rm -f $(TARGET) $(OBJ)
