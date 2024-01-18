@@ -10,9 +10,9 @@ padding pad10x1(int x, int m){
 
     } else {
         int j = safeModulo(-m-2, x); /* number of 0s that are missing */        
-        printf("j = %d\n", j);
+        //printf("%d 0s are missing\n", j);
         j = (j+6)/8; /* number of bytes that the full padding contains */
-        printf("then j = %d\n", j);
+        //printf("the full padding will contain %d bytes\n", j);
         
         padding p;
         initPadding(&p, j);
@@ -31,7 +31,7 @@ void pad(uint64_t* S, padding p){
     
     int q = p.len/8; /* Number of missing lines */
     int r = p.len - (8*q); /* Number of missing bytes after completing missing lines */
-    printf("q = %d, r = %d\n", q, r);
+    //printf("q = %d, r = %d\n", q, r);
 
     uint64_t l;
     l = S[20 - q];

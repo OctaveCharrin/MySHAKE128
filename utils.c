@@ -93,7 +93,7 @@ void printBits8(char num) {
 }
 
 void printHex8(char num) {
-    printf("%02X", (unsigned char)num);
+    printf("%02x", (unsigned char)num);
 }
 
 void printBits64(uint64_t num) {
